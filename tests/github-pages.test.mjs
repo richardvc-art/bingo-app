@@ -40,6 +40,25 @@ test("HTML en service-workerregistratie gebruiken relatieve projectpaden", () =>
   assertInsideProject("./service-worker.js", "service worker");
 });
 
+test("CSP beperkt runtimebronnen tot wat de lokale PWA nodig heeft", () => {
+  const match = index.match(/http-equiv="Content-Security-Policy"\s+content="([^"]+)"/);
+  assert.ok(match, "Content-Security-Policy meta-tag ontbreekt");
+
+  const csp = match[1];
+  assert.match(csp, /default-src 'self'/);
+  assert.match(csp, /script-src 'self' 'wasm-unsafe-eval'/);
+  assert.match(csp, /worker-src 'self' blob:/);
+  assert.match(csp, /style-src 'self'/);
+  assert.match(csp, /img-src 'self' blob:/);
+  assert.match(csp, /connect-src 'self'/);
+  assert.match(csp, /object-src 'none'/);
+  assert.match(csp, /base-uri 'none'/);
+  assert.match(csp, /form-action 'none'/);
+  assert.doesNotMatch(csp, /(?:^|\s)'unsafe-inline'(?:\s|;|$)/);
+  assert.doesNotMatch(csp, /(?:^|\s)'unsafe-eval'(?:\s|;|$)/);
+  assert.doesNotMatch(csp, /https?:\/\//);
+});
+
 test("offline-cache en OCR-bestanden blijven in de projectsubmap", () => {
   const cachedPaths = [...serviceWorker.matchAll(/^\s+"(\.\/[^\"]*)",?$/gm)].map((match) => match[1]);
   assert.ok(cachedPaths.length >= 15, "offline-cache bevat te weinig appbestanden");
