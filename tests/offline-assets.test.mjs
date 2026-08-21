@@ -1,23 +1,14 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 
 const runtimeFiles = [
   "index.html",
+  "styles.css",
   "app.js",
   "game-state.js",
-  "bingo-check.js",
-  "bingo-camera.js",
   "manifest.webmanifest",
   "service-worker.js",
-];
-
-const ocrAssets = [
-  "vendor/tesseract/tesseract.min.js",
-  "vendor/tesseract/worker.min.js",
-  "vendor/tesseract/core/tesseract-core-lstm.wasm.js",
-  "vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js",
-  "vendor/tesseract/lang/eng.traineddata.gz",
 ];
 
 test("first-party runtime bevat geen externe internet-URL's", () => {
@@ -27,19 +18,12 @@ test("first-party runtime bevat geen externe internet-URL's", () => {
   }
 });
 
-test("alle lokale OCR-bestanden bestaan en worden vooraf gecachet", () => {
+test("alle vooraf gecachete kernbestanden bestaan lokaal", () => {
   const serviceWorker = readFileSync("service-worker.js", "utf8");
+  const cachedPaths = [...serviceWorker.matchAll(/^\s+"(\.\/[^\"]*)",?$/gm)].map((match) => match[1]);
 
-  for (const path of ocrAssets) {
+  assert.ok(cachedPaths.length >= 10, "offline-cache bevat te weinig kernbestanden");
+  for (const path of cachedPaths) {
     assert.equal(existsSync(path), true, `${path} ontbreekt`);
-    assert.ok(statSync(path).size > 10_000, `${path} is onverwacht klein`);
-    assert.ok(serviceWorker.includes(`./${path}`), `${path} ontbreekt in de offline-cache`);
   }
-});
-
-test("de OCR-worker gebruikt uitsluitend lokale paden", () => {
-  const camera = readFileSync("bingo-camera.js", "utf8");
-  assert.match(camera, /workerPath:\s*assetUrl\(TESSERACT_ASSETS\.worker\)/);
-  assert.match(camera, /corePath:\s*assetUrl\(TESSERACT_ASSETS\.core\)/);
-  assert.match(camera, /langPath:\s*assetUrl\(TESSERACT_ASSETS\.language\)/);
 });

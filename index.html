@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self'; img-src 'self' blob:; connect-src 'self'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'self'"
+      content="default-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'self'"
     >
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#173b57">
@@ -62,8 +62,6 @@
           <button id="reset-button" class="button button-secondary" type="button">Nieuw spel</button>
         </section>
 
-        <button id="check-bingo-button" class="button button-check" type="button" disabled>Controleer bingo</button>
-
         <section class="history" aria-labelledby="history-heading">
           <div class="history-heading-row">
             <h2 id="history-heading">Getrokken getallen</h2>
@@ -80,53 +78,6 @@
         </section>
       </div>
     </main>
-
-    <dialog id="bingo-check-dialog" class="bingo-check-dialog" aria-labelledby="bingo-check-title">
-      <div class="dialog-header">
-        <div>
-          <p class="dialog-eyebrow">Experiment</p>
-          <h2 id="bingo-check-title">Controleer bingo</h2>
-        </div>
-        <button id="close-bingo-check" class="icon-button" type="button" aria-label="Sluiten">×</button>
-      </div>
-
-      <p id="check-game-summary" class="check-game-summary"></p>
-
-      <section id="photo-step" class="check-step">
-        <p>Maak een scherpe foto recht boven de kaart. Zorg voor goed licht en duidelijke markeringen.</p>
-        <label class="button button-primary photo-button">
-          Foto maken of kiezen
-          <input id="bingo-photo-input" type="file" accept="image/*" capture="environment">
-        </label>
-        <p class="privacy-note">De foto wordt alleen op dit apparaat verwerkt en niet verstuurd.</p>
-      </section>
-
-      <section id="recognition-step" class="check-step" hidden>
-        <img id="bingo-photo-preview" class="photo-preview" alt="Gekozen bingokaart">
-        <div id="recognition-progress" class="recognition-progress" role="status" aria-live="polite">
-          <span class="spinner" aria-hidden="true"></span>
-          <div>
-            <strong>Kaart herkennen…</strong>
-            <p id="recognition-status">OCR voorbereiden</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="correction-step" class="check-step" hidden>
-        <p id="recognition-summary" class="recognition-summary"></p>
-        <p class="correction-help">Controleer de nummers en zet <strong>Afgestreept</strong> goed. Automatische herkenning kan fouten maken.</p>
-        <div class="candidate-labels" aria-hidden="true">
-          <span>Nummer</span>
-          <span>Afgestreept</span>
-        </div>
-        <div id="candidate-list" class="candidate-list"></div>
-        <button id="add-candidate" class="button button-secondary add-candidate" type="button">Nummer toevoegen</button>
-        <button id="validate-bingo" class="button button-primary validate-bingo" type="button">Vergelijk met trekking</button>
-        <div id="bingo-result" class="bingo-result" role="status" aria-live="polite" hidden></div>
-      </section>
-
-      <p class="checker-limitation">Deze eerste versie controleert of alle als afgestreept gemarkeerde nummers zijn getrokken. Een winnend lijnpatroon wordt nog niet beoordeeld.</p>
-    </dialog>
 
     <noscript>Schakel JavaScript in om Bingo te gebruiken.</noscript>
     <script type="module" src="./app.js"></script>
