@@ -1,22 +1,15 @@
-const CACHE_NAME = "bingo-75-90-v15";
+const CACHE_NAME = "bingo-75-90-v16";
 const APP_FILES = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
   "./game-state.js",
-  "./bingo-check.js",
-  "./bingo-camera.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",
-  "./vendor/tesseract/tesseract.min.js",
-  "./vendor/tesseract/worker.min.js",
-  "./vendor/tesseract/core/tesseract-core-lstm.wasm.js",
-  "./vendor/tesseract/core/tesseract-core-simd-lstm.wasm.js",
-  "./vendor/tesseract/lang/eng.traineddata.gz",
 ];
 
 self.addEventListener("install", (event) => {

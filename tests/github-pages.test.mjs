@@ -6,7 +6,6 @@ const pagesBase = new URL("https://voorbeeld.github.io/bingo-app/");
 const manifest = JSON.parse(readFileSync("manifest.webmanifest", "utf8"));
 const index = readFileSync("index.html", "utf8");
 const app = readFileSync("app.js", "utf8");
-const camera = readFileSync("bingo-camera.js", "utf8");
 const serviceWorker = readFileSync("service-worker.js", "utf8");
 
 function assertInsideProject(path, label) {
@@ -46,10 +45,10 @@ test("CSP beperkt runtimebronnen tot wat de lokale PWA nodig heeft", () => {
 
   const csp = match[1];
   assert.match(csp, /default-src 'self'/);
-  assert.match(csp, /script-src 'self' 'wasm-unsafe-eval'/);
-  assert.match(csp, /worker-src 'self' blob:/);
+  assert.match(csp, /script-src 'self'/);
+  assert.match(csp, /worker-src 'self'/);
   assert.match(csp, /style-src 'self'/);
-  assert.match(csp, /img-src 'self' blob:/);
+  assert.match(csp, /img-src 'self'/);
   assert.match(csp, /connect-src 'self'/);
   assert.match(csp, /object-src 'none'/);
   assert.match(csp, /base-uri 'none'/);
@@ -59,21 +58,11 @@ test("CSP beperkt runtimebronnen tot wat de lokale PWA nodig heeft", () => {
   assert.doesNotMatch(csp, /https?:\/\//);
 });
 
-test("offline-cache en OCR-bestanden blijven in de projectsubmap", () => {
+test("offline-cache blijft in de projectsubmap", () => {
   const cachedPaths = [...serviceWorker.matchAll(/^\s+"(\.\/[^\"]*)",?$/gm)].map((match) => match[1]);
-  assert.ok(cachedPaths.length >= 15, "offline-cache bevat te weinig appbestanden");
+  assert.ok(cachedPaths.length >= 10, "offline-cache bevat te weinig appbestanden");
 
   for (const path of cachedPaths) {
     assertInsideProject(path, `cachepad ${path}`);
   }
-
-  const ocrPaths = [...camera.matchAll(/^\s+(?:script|worker|core|language): "([^"]+)",$/gm)].map((match) => match[1]);
-  assert.equal(ocrPaths.length, 4);
-
-  for (const path of ocrPaths) {
-    assert.match(path, /^\.\/vendor\/tesseract\//);
-    assertInsideProject(path, `OCR-pad ${path}`);
-  }
-
-  assert.match(camera, /new URL\(path, document\.baseURI\)\.href/);
 });

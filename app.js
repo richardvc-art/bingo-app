@@ -1,5 +1,4 @@
 import { BingoGame, GameStatus } from "./game-state.js";
-import { setupBingoChecker } from "./bingo-camera.js";
 const game = new BingoGame();
 
 const elements = {
@@ -12,7 +11,6 @@ const elements = {
   tempoSelect: document.querySelector("#tempo-select"),
   playButton: document.querySelector("#play-button"),
   resetButton: document.querySelector("#reset-button"),
-  checkBingoButton: document.querySelector("#check-bingo-button"),
   drawCount: document.querySelector("#draw-count"),
   historyToggle: document.querySelector("#history-toggle"),
   numberGrid: document.querySelector("#number-grid"),
@@ -21,7 +19,6 @@ const elements = {
 let timerId = null;
 let renderedNumber = game.snapshot.currentNumber;
 let renderedGridMax = null;
-const bingoChecker = setupBingoChecker({ getGameState: () => game.snapshot });
 
 function createNumberGrid(maxNumber) {
   elements.numberGrid.replaceChildren();
@@ -82,7 +79,6 @@ function render() {
   elements.historyToggle.checked = state.showDrawnNumbers;
   elements.numberGrid.hidden = !state.showDrawnNumbers;
   elements.drawCount.textContent = `${state.drawnNumbers.length} / ${state.maxNumber}`;
-  elements.checkBingoButton.disabled = state.drawnNumbers.length === 0;
 
   if (state.currentNumber !== renderedNumber) {
     elements.currentNumber.classList.remove("changed");
@@ -177,18 +173,8 @@ elements.resetButton.addEventListener("click", () => {
   render();
 });
 
-elements.checkBingoButton.addEventListener("click", () => {
-  bingoChecker.open();
-});
-
 render();
 scheduleNextDraw();
-
-// Alleen-lezen toegang voor de cameracontrole en mogelijke latere uitbreidingen.
-globalThis.bingoGame = Object.freeze({
-  getState: () => game.snapshot,
-  getDrawnNumbers: () => game.snapshot.drawnNumbers,
-});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
