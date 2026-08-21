@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#173b57">
+    <meta name="description" content="Een eenvoudige offline bingo-app voor 75 of 90 getallen.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Bingo">
+    <title>Bingo</title>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <h1 id="app-title">Bingo</h1>
+        <p id="game-status" class="game-status" role="status" aria-live="polite">Kies een spel</p>
+      </header>
+
+      <section id="game-choice" class="choice-card" aria-labelledby="choice-heading">
+        <p class="choice-eyebrow">Nieuw spel</p>
+        <h2 id="choice-heading">Hoeveel getallen?</h2>
+        <p class="choice-help">Kies de bingovariant die je wilt spelen.</p>
+        <div class="choice-buttons">
+          <button class="button choice-button" type="button" data-max-number="75">
+            <strong>75</strong>
+            <span>getallen</span>
+          </button>
+          <button class="button choice-button" type="button" data-max-number="90">
+            <strong>90</strong>
+            <span>getallen</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="game-area" hidden>
+        <section class="current-card" aria-labelledby="current-label">
+          <p id="current-label" class="current-label">Huidig getal</p>
+          <div id="current-number" class="current-number" aria-live="polite" aria-atomic="true">–</div>
+        </section>
+
+        <div class="tempo-control">
+          <label for="tempo-select">Tempo</label>
+          <select id="tempo-select">
+            <option value="2">Snel · 2 seconden</option>
+            <option value="3">Normaal · 3 seconden</option>
+            <option value="5">Rustig · 5 seconden</option>
+            <option value="10">Langzaam · 10 seconden</option>
+          </select>
+        </div>
+
+        <section class="controls" aria-label="Spelbediening">
+          <button id="play-button" class="button button-primary" type="button">Start</button>
+          <button id="reset-button" class="button button-secondary" type="button">Nieuw spel</button>
+        </section>
+
+        <button id="check-bingo-button" class="button button-check" type="button" disabled>Controleer bingo</button>
+
+        <section class="history" aria-labelledby="history-heading">
+          <div class="history-heading-row">
+            <h2 id="history-heading">Getrokken getallen</h2>
+            <div class="history-heading-actions">
+              <span id="draw-count" class="draw-count">0</span>
+              <label class="history-toggle">
+                <input id="history-toggle" type="checkbox" checked>
+                <span class="toggle-track" aria-hidden="true"></span>
+                <span>Tonen</span>
+              </label>
+            </div>
+          </div>
+          <div id="number-grid" class="number-grid"></div>
+        </section>
+      </div>
+    </main>
+
+    <dialog id="bingo-check-dialog" class="bingo-check-dialog" aria-labelledby="bingo-check-title">
+      <div class="dialog-header">
+        <div>
+          <p class="dialog-eyebrow">Experiment</p>
+          <h2 id="bingo-check-title">Controleer bingo</h2>
+        </div>
+        <button id="close-bingo-check" class="icon-button" type="button" aria-label="Sluiten">×</button>
+      </div>
+
+      <p id="check-game-summary" class="check-game-summary"></p>
+
+      <section id="photo-step" class="check-step">
+        <p>Maak een scherpe foto recht boven de kaart. Zorg voor goed licht en duidelijke markeringen.</p>
+        <label class="button button-primary photo-button">
+          Foto maken of kiezen
+          <input id="bingo-photo-input" type="file" accept="image/*" capture="environment">
+        </label>
+        <p class="privacy-note">De foto wordt alleen op dit apparaat verwerkt en niet verstuurd.</p>
+      </section>
+
+      <section id="recognition-step" class="check-step" hidden>
+        <img id="bingo-photo-preview" class="photo-preview" alt="Gekozen bingokaart">
+        <div id="recognition-progress" class="recognition-progress" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <div>
+            <strong>Kaart herkennen…</strong>
+            <p id="recognition-status">OCR voorbereiden</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="correction-step" class="check-step" hidden>
+        <p id="recognition-summary" class="recognition-summary"></p>
+        <p class="correction-help">Controleer de nummers en zet <strong>Afgestreept</strong> goed. Automatische herkenning kan fouten maken.</p>
+        <div class="candidate-labels" aria-hidden="true">
+          <span>Nummer</span>
+          <span>Afgestreept</span>
+        </div>
+        <div id="candidate-list" class="candidate-list"></div>
+        <button id="add-candidate" class="button button-secondary add-candidate" type="button">Nummer toevoegen</button>
+        <button id="validate-bingo" class="button button-primary validate-bingo" type="button">Vergelijk met trekking</button>
+        <div id="bingo-result" class="bingo-result" role="status" aria-live="polite" hidden></div>
+      </section>
+
+      <p class="checker-limitation">Deze eerste versie controleert of alle als afgestreept gemarkeerde nummers zijn getrokken. Een winnend lijnpatroon wordt nog niet beoordeeld.</p>
+    </dialog>
+
+    <noscript>Schakel JavaScript in om Bingo te gebruiken.</noscript>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
